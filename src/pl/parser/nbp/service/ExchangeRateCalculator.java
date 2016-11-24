@@ -45,6 +45,7 @@ public class ExchangeRateCalculator {
                 .getStandardDeviation();
     }
 
+    // class is an extension to DoubleSummaryStatistics to enable calculation of standard deviation
     private static class DoubleStatistics extends DoubleSummaryStatistics {
 
         private double sumOfSquare = 0.0d;
@@ -69,9 +70,9 @@ public class ExchangeRateCalculator {
 
         private void sumOfSquareWithCompensation(double value) {
             double tmp = value - sumOfSquareCompensation;
-            double velvel = sumOfSquare + tmp; // Little wolf of rounding error
-            sumOfSquareCompensation = (velvel - sumOfSquare) - tmp;
-            sumOfSquare = velvel;
+            double comp = sumOfSquare + tmp;
+            sumOfSquareCompensation = (comp - sumOfSquare) - tmp;
+            sumOfSquare = comp;
         }
 
         public double getSumOfSquare() {
@@ -83,11 +84,13 @@ public class ExchangeRateCalculator {
         }
 
         public final double getStandardDeviation() {
-            return getCount() > 0 ? Math.sqrt((getSumOfSquare() / getCount()) - Math.pow(getAverage(), 2)) : 0.0d;
+            return getCount() > 0 ? Math.sqrt((getSumOfSquare() / getCount()) -
+                    Math.pow(getAverage(), 2)) : 0.0d;
         }
 
         public static Collector<Double, ?, DoubleStatistics> collector() {
-            return Collector.of(DoubleStatistics::new, DoubleStatistics::accept, DoubleStatistics::combine);
+            return Collector.of(DoubleStatistics::new, DoubleStatistics::accept,
+                    DoubleStatistics::combine);
         }
     }
 }
