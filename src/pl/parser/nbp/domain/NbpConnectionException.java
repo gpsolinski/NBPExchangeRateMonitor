@@ -3,7 +3,9 @@ package pl.parser.nbp.domain;
 import java.io.IOException;
 
 /**
- * Created by Grzegorz on 23.11.2016.
+ * Exception used to indicate problems with connecting to the NBP site.
+ *
+ * @author Grzegorz Soliński
  */
 public class NbpConnectionException extends IOException {
 

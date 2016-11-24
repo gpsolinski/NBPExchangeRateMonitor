@@ -4,7 +4,10 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDate;
 
 /**
- * Created by Grzegorz on 23.11.2016.
+ * Used to enable the usage of java.time.LocalDate (instead of java.util.Date)type in the JAXB
+ * template classes.
+ *
+ * @author Grzegorz Soliński
  */
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
 

@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Created by Grzegorz on 23.11.2016.
+ * Class template for exchange rate table pulled from XML.
+ *
+ * @author Grzegorz Soliński
  */
 @XmlRootElement(name = "tabela_kursow")
 public class ExchangeRateTable {

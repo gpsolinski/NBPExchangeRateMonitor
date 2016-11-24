@@ -1,8 +1,11 @@
 package pl.parser.nbp.domain;
 
 /**
- * Created by Grzegorz on 23.11.2016.
+ * Used to limit and specify the supported currency codes
+ *
+ * @author Grzegorz Soliński
  */
 public enum Currency {
+    // obsługiwane jedynie waluty wymienione w treści zadania
     USD, EUR, CHF, GBP
 }

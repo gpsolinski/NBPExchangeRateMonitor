@@ -5,7 +5,9 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Created by Grzegorz on 23.11.2016.
+ * Used to enable parsing double values from XML with a coma as a decimal separator.
+ *
+ * @author Grzegorz Soliński
  */
 public class DoubleAdapter extends XmlAdapter<String, Double> {
 

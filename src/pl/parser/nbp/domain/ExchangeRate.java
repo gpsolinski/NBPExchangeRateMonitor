@@ -5,7 +5,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Created by Grzegorz on 23.11.2016.
+ * Class template for exchange rate information pulled from XML.
+ *
+ * @author Grzegorz Soliński
  */
 @XmlRootElement(name = "pozycja")
 public class ExchangeRate {

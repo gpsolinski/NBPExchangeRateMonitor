@@ -1,21 +1,24 @@
 package pl.parser.nbp;
 
+import pl.parser.nbp.domain.Currency;
 import pl.parser.nbp.domain.ExchangeRate;
 import pl.parser.nbp.domain.NbpConnectionException;
 import pl.parser.nbp.service.ExchangeRateCalculator;
 import pl.parser.nbp.service.NbpCurrencyMonitor;
-import pl.parser.nbp.service.impl.ExchangeRateCalculatorImpl;
-import pl.parser.nbp.service.impl.NbpCurrencyMonitorImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainClass {
 
     public static void main(String[] args) {
 
+        // validation of the number of passed arguments
         if (args.length < 3) {
             System.out.println("Insufficient number of arguments");
             printUsage();
@@ -29,11 +32,23 @@ public class MainClass {
         }
 
         String currency = args[0];
+
+        // validation of the entered currency code
+        List<Currency> supportedCurrency = new ArrayList<>();
+        supportedCurrency.addAll(Arrays.asList(Currency.values()));
+        if (!supportedCurrency.stream()
+                .map(Currency::toString)
+                .collect(Collectors.toSet())
+                .contains(currency)) {
+
+            System.out.println("Unsupported currency: " + currency);
+            System.out.println("Supported currencies are:");
+            supportedCurrency.stream().forEach(curr -> System.out.println(curr));
+            return;
+
+        }
         String dateFromString = args[1];
         String dateToString = args[2];
-
-        NbpCurrencyMonitor nbpCurrencyMonitor = new NbpCurrencyMonitorImpl();
-        ExchangeRateCalculator exchangeRateCalculator = new ExchangeRateCalculatorImpl();
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateFrom = null;
@@ -41,8 +56,14 @@ public class MainClass {
         List<ExchangeRate> exchangeRates;
         try {
             dateFrom = LocalDate.parse(dateFromString, dateTimeFormatter);
+            // walidacja wprowadzonej daty początkowej
+            if (dateFrom.isBefore(LocalDate.of(2002, 1, 2))) {                 // NBP provides data since 2002-01-02
+                System.out.println("Unsupported date: " + dateFromString);
+                System.out.println("The earliest supported date is 2002-01-02");
+                return;
+            }
             dateTo = LocalDate.parse(dateToString, dateTimeFormatter);
-            exchangeRates = nbpCurrencyMonitor.getExchangeRates(currency, dateFrom, dateTo);
+            exchangeRates = NbpCurrencyMonitor.getExchangeRates(currency, dateFrom, dateTo);
         } catch (DateTimeParseException e) {
             System.out.print("Unrecognized date format: ");
             if (dateFrom == null) {
@@ -57,8 +78,8 @@ public class MainClass {
             return;
         }
 
-        double avgBuyingExchangeRate = exchangeRateCalculator.avgBuyingExchangeRate(exchangeRates);
-        double stdDevSellingExchangeRate = exchangeRateCalculator.stdDevSellingExchangeRate(exchangeRates);
+        double avgBuyingExchangeRate = ExchangeRateCalculator.avgBuyingExchangeRate(exchangeRates);
+        double stdDevSellingExchangeRate = ExchangeRateCalculator.stdDevSellingExchangeRate(exchangeRates);
 
         System.out.format("%.4f\n%.4f", avgBuyingExchangeRate, stdDevSellingExchangeRate);
     }
